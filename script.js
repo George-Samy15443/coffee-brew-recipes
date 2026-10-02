@@ -22,7 +22,20 @@ recipeForm.addEventListener('submit', (e) => {
 
     listItems.push(newRecipe)
     e.target.reset()
+    recipeContainer.dispatchEvent(new CustomEvent('refreshRecipes'))
+})
+
+recipeContainer.addEventListener('refreshRecipes', () => {
     displayRecipes()
+    localStorage.setItem('recipeContainer.list', JSON.stringify(listItems));
+})
+// recipeContainer.addEventListener('refreshRecipes', saveToLocalStorage)
+window.addEventListener('DOMContentLoaded', () => {
+    const tempLocalStorage = localStorage.getItem('recipeContainer.list')
+    if(!tempLocalStorage) return
+    const tempRecipes = JSON.parse(tempLocalStorage)
+    listItems.push(...tempRecipes)
+    recipeContainer.dispatchEvent(new CustomEvent('refreshRecipes'))
 })
 
 function displayRecipes() {
@@ -53,4 +66,8 @@ function displayRecipes() {
         </div>
         `).join('')
         recipeContainer.innerHTML = tempString
+}
+
+function saveToLocalStorage(){
+    localStorage.setItem('recipeContainer.list', JSON.stringify(listItems));
 }
